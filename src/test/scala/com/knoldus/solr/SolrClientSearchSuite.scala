@@ -11,15 +11,17 @@ class SolrClientSearchSuite extends FunSpec {
 
    it("Fetch Total count From Solr Client ") {
      val collection_name = "gettingstarted"
+     val expected_result = 4
      val record = scc.findCountOfRecord(collection_name)
-     assert(record.get equals(4))
+     assert(record.get >= expected_result)
    }
 
    it("fetch data with keyword") {
      val collection_name = "gettingstarted"
      val keyword = "fantasy"
+     val expected_result = 3
      val record = scc.findRecordWithKeyword(collection_name,keyword)
-     assert(record.get equals(3))
+     assert(record.get equals expected_result)
 
    }
 
@@ -27,8 +29,9 @@ class SolrClientSearchSuite extends FunSpec {
      val collection_name = "gettingstarted"
      val key = "name"
      val value = "The Sea of Monsters"
+     val expected_result = 1
      val record = scc.findRecordWithKeyAndValue(collection_name,key, value)
-     assert(record.get equals(1))
+     assert(record.get equals expected_result)
 
    }
 
@@ -37,6 +40,6 @@ class SolrClientSearchSuite extends FunSpec {
       2,"education",true,1253.2,892)
     val collection_name = "gettingstarted"
     val record = scc.updateRecord(collection_name, book_Details)
-    assert(record.get equals (0))
+    assert(record.get equals 0)
   }
 }
