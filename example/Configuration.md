@@ -8,7 +8,7 @@ or Collection** into the Solr with defaulrt settings.
 
 But If you want to create **Core** with your schema than you have to fullfil some basic requirement.
 
-1. Cretae a ***configs*** folder which contains **conf folder** in it or download [***test_schema_configs***](https://github.com/knoldus/scala-solr-client/tree/master/example) folder in your system.
+1. Cretae a ***configs*** folder which contains **conf folder** in it or download [***test_schema_configs***](https://github.com/knoldus/scala-solr-client/tree/master/example) folder for creating **Core** with schema and [***test_schemaless_configs***](https://github.com/knoldus/scala-solr-client/tree/master/example) folder for creating **Core** with *Schema less property* in your system.
 2. If you are creating folder then there are some files which should be in the **conf folder** otherwise just go to the next step. We will discuss about these files later in this sagement.
   1. managed-schema
   2. solrconfig.xml
