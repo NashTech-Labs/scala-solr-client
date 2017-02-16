@@ -47,5 +47,4 @@ words in the protected word list will not be modified by any stemmer in Solr. Fo
 6. **synonyms.txt** : Solr contains a filter factory called *SynonymFilterFactory* to achieve this functionality. You add your
 synonyms in synonyms.txt file.For more information please visit [Synonym Filter](https://cwiki.apache.org/confluence/display/solr/Filter+Descriptions#FilterDescriptions-SynonymFilter).
 
-These files should be present in your **conf folder** but it is not necessary to define anything in it. You can update those files 
-according to your needs.
+These files should be present in your **conf folder** but it is not necessary to define anything in it. You can update those files according to your needs.
