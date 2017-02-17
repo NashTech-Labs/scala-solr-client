@@ -20,7 +20,8 @@ But If you want to create **Core** with your schema than you have to fullfil som
 4. When you will start Solr with this command that means you have to provide all the configuration for the **Core**, so when it 
 will ask for the configuration like : `Please choose a configuration for the anu_123 collection, available options are:`, there 
 you have to provide the path of the *configs* folder.
-5. You are ready with your new **Core** with your configuration.
+5. You are ready with your new **Core** with your configuration and load data into it.
+6. If you are going to run test cases now, then please make require changes in the ***application.conf*** file.
 
 Now we will discuss about the those files which should be present in the **Conf folder** :
 
