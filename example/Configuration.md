@@ -29,7 +29,9 @@ Now we will discuss about the those files which should be present in the **Conf 
   When we create *Schema* we have to provide some *FieldType* which is necessary like " tlongs, tdoubles,tdate, tdates" which is 
   present in *solr.Trie<datatype>Field" class because TrieField provides field types to support for Lucene's IntField, LongField, 
   FloatField and DoubleField. It supports integer, float, long, double and date types. eg: [Example of Schema](https://github.com/knoldus/scala-solr-client/blob/master/example/test_schema_configs/conf/managed-schema)
-  2.  ***Schema Less Mode*** :
+  2.  ***Schema Less Mode*** : Schemaless allow you to rapidly construct an effective schema. All these feature is construct via solrConfig.xml. Eg. [Example of Schemaless](https://github.com/knoldus/scala-solr-client/blob/master/example/test_schemaless_configs/conf/managed-schema).
+  
+  For More information regarding to the [Schemaless Mode](https://cwiki.apache.org/confluence/display/solr/Schemaless+Mode).
 2. **solrconfig.xml** : This contains most of the parameters for configuring Solr itself. We does not make any change until we 
 have to set any property. we basically set these property in this file :
   1. Data Directory Location
