@@ -1,23 +1,19 @@
 package com.knoldus.solr
 
-import java.io.IOException
-
 import org.apache.solr.client.solrj.{SolrQuery, SolrServerException}
-import org.apache.solr.client.solrj.impl.HttpSolrClient
+import org.apache.solr.client.solrj.impl.{HttpSolrClient, XMLResponseParser}
 import org.apache.solr.client.solrj.response.{QueryResponse, UpdateResponse}
 import org.apache.solr.common.{SolrDocumentList, SolrInputDocument}
 import com.typesafe.config.ConfigFactory
-
-/**
- * Created by anurag on 10/2/17.
- */
-
+import com.google.gson.Gson
+import org.json4s._
+import org.json4s.native.JsonMethods._
 
 case class Book_Details(id: String,
     cat: Array[String],
     name: String,
     author: String,
-    series_t: String,
+    series_t: Option[String],
     sequence_i: Int,
     genre_s: String,
     inStock: Boolean,
@@ -31,21 +27,15 @@ class SolrClientSearch {
   val url = config.getString("solr.url")
   val collection_name = config.getString("solr.collection")
   val url_final = url + collection_name
-  println("************************* Full url " + url_final)
 
   def findCountOfRecord(): Option[Int] = {
     try {
-      val solrClient = new HttpSolrClient.Builder(url_final).build()
       val parameter = new SolrQuery()
       parameter.set("qt", "/select")
       parameter.set("indent", "on")
       parameter.set("q", "*:*")
       parameter.set("wt", "json")
-      val response: QueryResponse = solrClient.query(parameter)
-      val documentList: SolrDocumentList = response.getResults
-      println(" Result List Data " + documentList.size())
-      println("**************** " + documentList.get(1))
-      Some(documentList.size())
+      executeQuery(parameter)
     } catch {
       case solrServerException: SolrServerException =>
         println("Solr Server Exception : " + solrServerException.getMessage)
@@ -55,16 +45,12 @@ class SolrClientSearch {
 
   def findRecordWithKeyword(keyword: String) = {
     try {
-      val solrClient = new HttpSolrClient.Builder(url_final).build()
-      val parameter = new SolrQuery()
+      val parameter: SolrQuery = new SolrQuery()
       parameter.set("qt", "/select")
       parameter.set("indent", "on")
       parameter.set("q", s"$keyword")
       parameter.set("wt", "json")
-      val response: QueryResponse = solrClient.query(parameter)
-      val documentList: SolrDocumentList = response.getResults
-      println(" Result List Data " + documentList.size())
-      Some(documentList.size())
+      executeQuery(parameter)
     } catch {
       case solrServerException: SolrServerException =>
         println("Solr Server Exception : " + solrServerException.getMessage)
@@ -72,20 +58,16 @@ class SolrClientSearch {
     }
   }
 
+
   def findRecordWithKeyAndValue(key: String, value: String): Option[Int] = {
     try {
-      val solrClient = new HttpSolrClient.Builder(url_final).build()
       val keyValue = s"$key:" + s"${ value.trim }"
       val parameter = new SolrQuery()
       parameter.set("qt", "/select")
       parameter.set("indent", "true")
       parameter.set("q", s"$keyValue")
       parameter.set("wt", "json")
-      val response: QueryResponse = solrClient.query(parameter)
-      val documentList: SolrDocumentList = response.getResults
-      println(" Result List Data " + documentList.size())
-      println("**************** " + documentList.get(0))
-      Some(documentList.size())
+      executeQuery(parameter)
     } catch {
       case solrServerException: SolrServerException =>
         println("Solr Server Exception : " + solrServerException.getMessage)
@@ -93,10 +75,27 @@ class SolrClientSearch {
     }
   }
 
+  private def executeQuery(parameter: SolrQuery): Option[Int] = {
+    try {
+      val solrClient = new HttpSolrClient.Builder(url_final).build()
+      solrClient.setParser(new XMLResponseParser())
+      val gson = new Gson()
+      val response: QueryResponse = solrClient.query(parameter)
+      implicit val formats = DefaultFormats
+      val data: List[Book_Details] = parse(gson.toJson(response.getResults))
+        .extract[List[Book_Details]]
+      Some(data.size)
+    } catch {
+      case solrServerException: SolrServerException =>
+        println("Solr Server Exception : " + solrServerException.getMessage)
+        None
+    }
+
+  }
+
   def updateRecord(book_Details: Book_Details): Option[Int] = {
     try {
       val solrClient = new HttpSolrClient.Builder(url).build()
-      val list_cat = Array("book", "hardcover")
       val sdoc = new SolrInputDocument()
       sdoc.addField("id", book_Details.id)
       sdoc.addField("cat", book_Details.cat)
