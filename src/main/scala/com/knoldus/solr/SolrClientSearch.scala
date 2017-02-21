@@ -28,6 +28,12 @@ class SolrClientSearch {
   val collection_name = config.getString("solr.collection")
   val url_final = url + collection_name
 
+  /**
+   * This method will return total count of records in your solr
+   *
+   * @return
+   */
+
   def findCountOfRecord(): Option[Int] = {
     try {
       val parameter = new SolrQuery()
@@ -43,7 +49,14 @@ class SolrClientSearch {
     }
   }
 
-  def findRecordWithKeyword(keyword: String) = {
+  /**
+   * This method will take a keyword and fetch all the record related to that keyword
+   *
+   * @param keyword eg: fantasy
+   * @return total count of the record
+   */
+
+  def findRecordWithKeyword(keyword: String): Option[Int] = {
     try {
       val parameter: SolrQuery = new SolrQuery()
       parameter.set("qt", "/select")
@@ -57,6 +70,15 @@ class SolrClientSearch {
         None
     }
   }
+
+  /**
+   * This method will take a key and value, after this it will fetch all the record related to that
+   * key and value. eg: ("name", "scala")
+   *
+   * @param key   : name
+   * @param value : scala
+   * @return
+   */
 
 
   def findRecordWithKeyAndValue(key: String, value: String): Option[Int] = {
@@ -75,15 +97,24 @@ class SolrClientSearch {
     }
   }
 
+  /**
+   * This is a private method which take the value of solrQuery and then execute query with solr
+   * client and after execution it parse result into Case Class and create a List[CaseClass].
+   *
+   * @param parameter : Query
+   * @return
+   */
+
   private def executeQuery(parameter: SolrQuery): Option[Int] = {
     try {
-      val solrClient = new HttpSolrClient.Builder(url_final).build()
+      val solrClient: HttpSolrClient = new HttpSolrClient.Builder(url_final).build()
       solrClient.setParser(new XMLResponseParser())
       val gson = new Gson()
       val response: QueryResponse = solrClient.query(parameter)
       implicit val formats = DefaultFormats
       val data: List[Book_Details] = parse(gson.toJson(response.getResults))
         .extract[List[Book_Details]]
+      solrClient.close()
       Some(data.size)
     } catch {
       case solrServerException: SolrServerException =>
@@ -93,7 +124,14 @@ class SolrClientSearch {
 
   }
 
-  def updateRecord(book_Details: Book_Details): Option[Int] = {
+  /**
+   * This method take a parameter of Book_Details and then insert data or update data if that is
+   * present into solr collection. It match unique key and in our case that is id.
+   * @param book_Details
+   * @return
+   */
+
+  def createOrUpdateRecord(book_Details: Book_Details): Option[Int] = {
     try {
       val solrClient = new HttpSolrClient.Builder(url).build()
       val sdoc = new SolrInputDocument()

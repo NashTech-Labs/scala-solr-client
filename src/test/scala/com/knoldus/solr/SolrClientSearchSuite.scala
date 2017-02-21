@@ -33,11 +33,24 @@ class SolrClientSearchSuite extends FunSpec {
 
   }
 
-  it("update or insert data") {
-    val book_Details = new Book_Details("123456789-00-09876", Array("book", "education"),
+  it("insert data") {
+    val book_Details = new Book_Details("125436-145236-1244", Array("book", "education"),
       "Scala", "Martin", Some("scala education"),
       2, "education", true, 1253.2, 892)
-    val record = scc.updateRecord(book_Details)
+    val record = scc.createOrUpdateRecord(book_Details)
+    assert(record.get equals 0)
+  }
+
+  it("update data") {
+    val book_Details = new Book_Details("123456789-00-09876", Array("book", "education"),
+      "Akka_basic", "Martin", Some("scala education"),
+      2, "education", true, 1253.2, 892)
+
+    val book_Details_new = new Book_Details("123456789-00-09876", Array("book", "education"),
+      "Akka_http", "Martin", Some("scala education"),
+      2, "education", true, 1253.2, 892)
+    scc.createOrUpdateRecord(book_Details)
+    val record = scc.createOrUpdateRecord(book_Details_new)
     assert(record.get equals 0)
   }
 }
