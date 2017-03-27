@@ -3,7 +3,7 @@ This repository contains the basic starter app with update and search operations
 
 ## Prerequisites:
 
-Solr must have been installed on your system and running on port : 8983. If you have not downloaded it See the link [here](http://www-eu.apache.org/dist/lucene/solr/6.4.1/)
+Solr must have been installed on your system and running on port : 8983. If you have not downloaded it See the link [here](http://www-eu.apache.org/dist/lucene/solr/)
 After Downloading Solr use these commands which will create collection and indexes for data :
 
 1. Start Solr : 
